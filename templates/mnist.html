@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <title>MNIST app</title>
+    <!-- CSS only -->
+
+    <link rel="stylesheet" href="{{url_for('static', filename='main.css')}}" />
+  </head>
+
+  <body>
+    <main>
+      <h1 class="title">MNIST hand written digit prediction</h1>
+
+      <div class="section">
+        <canvas id="canvas" width="128" height="128"></canvas>
+      </div>
+
+      <div class="section">
+        <input type="button" class="btn" value="Predict" style="" />
+        <input type="button" class="btn-clear" id="clearButton" value="Clear" />
+      </div>
+
+      <div class="section">
+        <h1 id="result"></h1>
+      </div>
+    </main>
+
+    <script src="{{url_for('static',filename='jquery-3.2.0.min.js')}}"></script>
+    <script src="{{url_for('static',filename='canvas.js')}}"></script>
+    <script type="text/javascript">
+      $(".btn").click(function(){
+      	$('#result').text('  Predicting...');
+      	var $SCRIPT_ROOT = {{request.script_root|tojson|safe}};
+      	var canvasObj = document.getElementById("canvas");
+      	var img = canvasObj.toDataURL('image/png');
+      	$.ajax({
+      		type: "POST",
+      		url: $SCRIPT_ROOT + "/predict/",
+      		data: img,
+      		success: function(data){
+      			$('#result').text('Prediction: ' + data.toString());
+      		}
+      	});
+      });
+    </script>
+  </body>
+</html>
